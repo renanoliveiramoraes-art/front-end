@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de IMC</title>
+    <style></style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Calculadora de IMC</h2>
+        
+        <!-- Formulário HTML -->
+        <div class="input-group">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" placeholder="Digite seu nome">
+        </div>
+
+        <div class="input-group">
+            <label for="peso">Peso (kg):</label>
+            <input type="number" id="peso" step="0.1" placeholder="Ex: 70">
+        </div>
+
+        <div class="input-group">
+            <label for="altura">Altura (m):</label>
+            <input type="number" id="altura" step="0.01" placeholder="Ex: 1.75">
+        </div>
+
+        <button onclick="calcularIMC()">Calcular IMC</button>
+
+        <!-- Área de Resultado Atual -->
+        <div id="resultado">
+            <h3 id="resNome"></h3>
+            <p id="resImc"></p>
+            <p id="resClassificacao"></p>
+        </div>
+
+        <!-- Área do Histórico (onde o Loop JS atua) -->
+        <div class="historico">
+            <h4>Histórico de Consultas</h4>
+            <div id="listaHistorico">Nenhum cálculo recente.</div>
+        </div>
+    </div>
+
+    <script>
+        // Variável global para armazenar o histórico de cálculos
+        const historicoPessoas = [];
+
+        function calcularIMC() {
+            // 1. Variáveis para capturar os valores digitados nos inputs HTML
+            let nome = document.getElementById("nome").value;
+            let peso = parseFloat(document.getElementById("peso").value);
+            let altura = parseFloat(document.getElementById("altura").value);
+
+            // Validação simples
+            if (!nome || !peso || !altura) {
+                alert("Por favor, preencha todos os campos!");
+                return;
+            }
+
+            // 2. Variável para o cálculo
+            let imc = peso / (altura * altura);
+            let classificacao = "";
+
+            // 3. Estrutura de Decisão (if / else if / else)
+            if (imc < 18.5) {
+                classificacao = "Abaixo do peso (Magreza)";
+            } else if (imc >= 18.5 && imc < 25) {
+                classificacao = "Peso normal (Saudável)";
+            } else if (imc >= 25 && imc < 30) {
+                classificacao = "Sobrepeso";
+            } else if (imc >= 30 && imc < 40) {
+                classificacao = "Obesidade";
+            } else {
+                classificacao = "Obesidade Grave";
+            }
+
+            // Exibindo o resultado atual na tela
+            document.getElementById("resNome").innerText = `Resultado para: ${nome}`;
+            document.getElementById("resImc").innerText = `IMC: ${imc.toFixed(2)}`;
+            document.getElementById("resClassificacao").innerText = `Classificação: ${classificacao}`;
+            document.getElementById("resultado").style.display = "block";
+
+            // Adicionando o novo cálculo ao array (variável de lista)
+            historicoPessoas.push({ nome, imc: imc.toFixed(2), classificacao });
+
+            // 4. Estrutura de Loop (for) para atualizar a lista do histórico na tela
+            let htmlHistorico = "";
+            for (let i = 0; i < historicoPessoas.length; i++) {
+                let p = historicoPessoas[i];
+                htmlHistorico += `<div class="historico-item"><strong>${p.nome}</strong>: IMC ${p.imc} (${p.classificacao})</div>`;
+            }
+
+            document.getElementById("listaHistorico").innerHTML = htmlHistorico;
+        }
+    </script>
+</body>
+</html>
